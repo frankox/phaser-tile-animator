@@ -1,0 +1,49 @@
+# Source files - only ship compiled JS and declarations
+src/
+tsconfig.json
+
+# Development and build files
+.gitignore
+.git/
+.vscode/
+.idea/
+
+# Documentation and examples
+README.md
+*.md
+docs/
+examples/
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Configuration files
+.eslintrc*
+.prettierrc*
+jest.config.*
+webpack.config.*
+
+# Environment and temporary files
+.env*
+.DS_Store
+Thumbs.db
+*.log
+tmp/
+temp/
+
+# Node modules and lock files
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage and build artifacts
+coverage/
+.nyc_output/
+*.tsbuildinfo
