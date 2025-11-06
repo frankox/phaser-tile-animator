@@ -1,6 +1,4 @@
----
-
-## 🪄 phaser-tile-animator
+### 🪄 phaser-tile-animator
 
 > 🧱 A lightweight, dependency-free **Phaser 3 plugin** that animates Tiled tilesets directly inside your game — no need for custom frame logic or sprite hacks.
 
@@ -76,8 +74,8 @@ export class GameScene extends Phaser.Scene {
 
   update() {
     // You can pause/resume animations anytime:
-    // this.tileAnimator.pause()
-    // this.tileAnimator.resume()
+    this.tileAnimator.pause()
+    this.tileAnimator.resume()
   }
 }
 ```

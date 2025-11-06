@@ -9,5 +9,21 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "lib",
+    "build",
+    "out",
+    "*.md",
+    "**/*.md",
+    "*.js",
+    "package.json",
+    "package-lock.json",
+    "README.md"
+  ]
 }
