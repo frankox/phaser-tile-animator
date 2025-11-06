@@ -11,10 +11,15 @@
     "phaser",
     "phaser3",
     "tiled",
+    "tileset",
     "tilemap",
     "animation",
     "plugin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frankox/phaser-tile-animator"
+  },
   "author": "Matteo Franchini",
   "license": "MIT",
   "peerDependencies": {
