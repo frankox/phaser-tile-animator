@@ -1,6 +1,6 @@
 {
   "name": "phaser-tile-animator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A lightweight Phaser 3 plugin for animating Tiled tilesets directly in-game",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
