@@ -70,12 +70,19 @@ export class GameScene extends Phaser.Scene {
 
     // 🎞️ Start tile animations
     this.tileAnimator.init(map)
+    
+    // 🎚️ Set animation framerate (default is 10 FPS)
+    this.tileAnimator.setFrameRate(30) // 30 FPS for smooth animations
   }
 
   update() {
     // You can pause/resume animations anytime:
     this.tileAnimator.pause()
     this.tileAnimator.resume()
+    
+    // Or adjust framerate dynamically:
+     this.tileAnimator.setFrameRate(60) // Speed up to 60 FPS
+     this.tileAnimator.setFrameRate(5)  // Slow down to 5 FPS
   }
 }
 ```
@@ -89,6 +96,8 @@ export class GameScene extends Phaser.Scene {
 | `init(map: Phaser.Tilemaps.Tilemap)` | Reads Tiled animation data and starts animating tiles.  |
 | `pause()`                            | Temporarily freezes all tile animations.                |
 | `resume()`                           | Resumes paused animations.                              |
+| `setFrameRate(fps: number)`          | Sets the absolute framerate for all animations (e.g., 10, 30, 60 FPS). |
+| `getFrameRate()`                     | Gets the current framerate in FPS.                     |
 | `destroy()`                          | Stops listening to scene updates and clears references. |
 
 ---

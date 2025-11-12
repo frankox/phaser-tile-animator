@@ -18,6 +18,7 @@ export class TileAnimator {
     private layers: Phaser.Tilemaps.TilemapLayer[] = []
     private animations: TileAnimation[] = []
     private paused = false
+    private frameRate = 10
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene
@@ -26,7 +27,8 @@ export class TileAnimator {
     /**
      * Reads animation data from a Tiled map and initializes tile animations.
      */
-    init(map: Phaser.Tilemaps.Tilemap) {
+    init(map: Phaser.Tilemaps.Tilemap, frameRate = 10): void {
+        this.frameRate = frameRate
         this.layers = map.layers.map((l: { name: any }) => map.getLayer(l.name)!.tilemapLayer)
 
         for (const ts of map.tilesets) {
@@ -65,6 +67,22 @@ export class TileAnimator {
     }
 
     /**
+     * Sets the absolute framerate for all animations.
+     * @param fps - Frames per second (e.g., 10, 30, 60)
+     */
+    setFrameRate(fps: number): void {
+        this.frameRate = Math.max(0.1, fps)
+    }
+
+    /**
+     * Gets the current framerate.
+     * @returns The current framerate in FPS
+     */
+    getFrameRate(): number {
+        return this.frameRate
+    }
+
+    /**
      * Stops listening to scene events and clears all data.
      */
     destroy(): void {
@@ -76,8 +94,11 @@ export class TileAnimator {
     update(_time: number, delta: number) {
         if (this.paused || this.animations.length === 0) return
 
+        const frameTime = 1000 / this.frameRate
+        const adjustedDelta = delta * (frameTime / 100)
+
         for (const anim of this.animations) {
-            anim.timer += delta
+            anim.timer += adjustedDelta
             const current = anim.frames[anim.currentFrame]
 
             if (anim.timer >= current.duration) {
