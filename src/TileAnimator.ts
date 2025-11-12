@@ -95,23 +95,17 @@ export class TileAnimator {
         if (this.paused || this.animations.length === 0) return
 
         const frameTime = 1000 / this.frameRate
-        const adjustedDelta = delta * (frameTime / 100)
 
         for (const anim of this.animations) {
-            anim.timer += adjustedDelta
-            const current = anim.frames[anim.currentFrame]
+            anim.timer += delta
 
-            if (anim.timer >= current.duration) {
-                anim.timer = 0
+            if (anim.timer >= frameTime) {
+                anim.timer -= frameTime
                 anim.currentFrame = (anim.currentFrame + 1) % anim.frames.length
                 const next = anim.frames[anim.currentFrame]
 
-                for (const layer of this.layers) {
-                    layer.forEachTile(tile => {
-                        if (tile.index === anim.baseIndex + current.tileid - anim.frames[0].tileid) {
-                            tile.index = anim.baseIndex + next.tileid - anim.frames[0].tileid
-                        }
-                    })
+                for (const tile of anim.tiles) {
+                    tile.index = anim.baseIndex + next.tileid - anim.frames[0].tileid
                 }
             }
         }
