@@ -1,5 +1,7 @@
 import Phaser from 'phaser'
 
+const DEFAULT_FRAME_RATE = 10
+
 interface TileAnimationFrame {
     tileid: number
     duration: number
@@ -18,7 +20,8 @@ export class TileAnimator {
     private layers: Phaser.Tilemaps.TilemapLayer[] = []
     private animations: TileAnimation[] = []
     private paused = false
-    private frameRate = 10
+    private frameRate = DEFAULT_FRAME_RATE
+    private speedMultiplier = 1
 
     constructor(scene: Phaser.Scene) {
         this.scene = scene
@@ -27,8 +30,8 @@ export class TileAnimator {
     /**
      * Reads animation data from a Tiled map and initializes tile animations.
      */
-    init(map: Phaser.Tilemaps.Tilemap, frameRate = 10): void {
-        this.frameRate = frameRate
+    init(map: Phaser.Tilemaps.Tilemap, frameRate = DEFAULT_FRAME_RATE): void {
+        this.setFrameRate(frameRate)
         this.layers = map.layers.map((l: { name: any }) => map.getLayer(l.name)!.tilemapLayer)
 
         for (const ts of map.tilesets) {
@@ -71,7 +74,15 @@ export class TileAnimator {
      * @param fps - Frames per second (e.g., 10, 30, 60)
      */
     setFrameRate(fps: number): void {
-        this.frameRate = Math.max(0.1, fps)
+        const clamped = Math.max(0.1, fps)
+        this.frameRate = clamped
+        this.speedMultiplier = clamped / DEFAULT_FRAME_RATE
+    }
+
+    setSpeedMultiplier(multiplier: number): void {
+        const clamped = Math.max(0.01, multiplier)
+        this.speedMultiplier = clamped
+        this.frameRate = DEFAULT_FRAME_RATE * clamped
     }
 
     /**
@@ -80,6 +91,10 @@ export class TileAnimator {
      */
     getFrameRate(): number {
         return this.frameRate
+    }
+
+    getSpeedMultiplier(): number {
+        return this.speedMultiplier
     }
 
     /**
@@ -94,19 +109,24 @@ export class TileAnimator {
     update(_time: number, delta: number) {
         if (this.paused || this.animations.length === 0) return
 
-        const frameTime = 1000 / this.frameRate
-
         for (const anim of this.animations) {
-            anim.timer += delta
+            anim.timer += delta * this.speedMultiplier
+            let currentFrame = anim.frames[anim.currentFrame]
+            let frameDuration = Math.max(1, currentFrame.duration ?? 100)
+            let advanced = false
 
-            if (anim.timer >= frameTime) {
-                anim.timer -= frameTime
+            while (anim.timer >= frameDuration) {
+                anim.timer -= frameDuration
                 anim.currentFrame = (anim.currentFrame + 1) % anim.frames.length
-                const next = anim.frames[anim.currentFrame]
+                currentFrame = anim.frames[anim.currentFrame]
+                frameDuration = Math.max(1, currentFrame.duration ?? 100)
+                advanced = true
+            }
 
-                for (const tile of anim.tiles) {
-                    tile.index = anim.baseIndex + next.tileid - anim.frames[0].tileid
-                }
+            if (!advanced) continue
+
+            for (const tile of anim.tiles) {
+                tile.index = anim.baseIndex + currentFrame.tileid - anim.frames[0].tileid
             }
         }
     }

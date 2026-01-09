@@ -71,8 +71,9 @@ export class GameScene extends Phaser.Scene {
     // 🎞️ Start tile animations
     this.tileAnimator.init(map)
     
-    // 🎚️ Set animation framerate (default is 10 FPS)
-    this.tileAnimator.setFrameRate(30) // 30 FPS for smooth animations
+    // 🎚️ Set animation speed (default baseline is 10 FPS)
+    this.tileAnimator.setFrameRate(30) // ~3x faster than Tiled durations
+    this.tileAnimator.setSpeedMultiplier(0.5) // Or halve the speed directly
   }
 
   update() {
@@ -80,9 +81,9 @@ export class GameScene extends Phaser.Scene {
     this.tileAnimator.pause()
     this.tileAnimator.resume()
     
-    // Or adjust framerate dynamically:
-     this.tileAnimator.setFrameRate(60) // Speed up to 60 FPS
-     this.tileAnimator.setFrameRate(5)  // Slow down to 5 FPS
+    // Or adjust speed dynamically:
+     this.tileAnimator.setFrameRate(60) // Speed up using FPS-style input
+     this.tileAnimator.setSpeedMultiplier(0.25)  // Or slow everything down
   }
 }
 ```
@@ -96,8 +97,10 @@ export class GameScene extends Phaser.Scene {
 | `init(map: Phaser.Tilemaps.Tilemap)` | Reads Tiled animation data and starts animating tiles.  |
 | `pause()`                            | Temporarily freezes all tile animations.                |
 | `resume()`                           | Resumes paused animations.                              |
-| `setFrameRate(fps: number)`          | Sets the absolute framerate for all animations (e.g., 10, 30, 60 FPS). |
+| `setFrameRate(fps: number)`          | Sets a global animation speed relative to the 10 FPS baseline, preserving per-frame durations from Tiled. |
+| `setSpeedMultiplier(multiplier: number)` | Directly apply a global multiplier (e.g., 0.5 for half speed, 2 for double speed). |
 | `getFrameRate()`                     | Gets the current framerate in FPS.                     |
+| `getSpeedMultiplier()`               | Gets the current global speed multiplier.             |
 | `destroy()`                          | Stops listening to scene updates and clears references. |
 
 ---
@@ -105,7 +108,7 @@ export class GameScene extends Phaser.Scene {
 ### ⚡ How It Works
 
 `TileAnimator` reads `tileData` from each tileset (as exported by **Tiled**) and caches references to all tiles that need animation.
-Each frame, it updates only those tiles based on the durations defined in your `.json` map.
+Each frame, it updates only those tiles based on the durations defined in your `.json` map, then scales them by your chosen global speed.
 
 **Performance:** even large maps with hundreds of tiles animate smoothly, since each tile’s position is pre-cached at startup.
 
